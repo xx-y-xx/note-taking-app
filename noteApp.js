@@ -6,6 +6,13 @@ const MOCK_NOTES = [
         color: 'green',
         isFavorite: false,
     },
+    {
+        id: 2,
+        title: 'Флекс Флекс',
+        content: 'К определённым полям формы можно обратиться через form.elements по значению, указанному в атрибуте name',
+        color: 'green',
+        isFavorite: false,
+    },
     // ...
 ]
 
@@ -18,12 +25,12 @@ const colors = {
 }
 
 //модель и работа с данными
-model = {
+const model = {
     notes: MOCK_NOTES, // notes: [],
-
+    // notes: [],
     addNote(title, content, color) {
 
-        const newNote = { id: Math.random(), title, conten, color, isFavorite: false }
+        const newNote = { id: Math.random(), title: title, content : content, color, isFavorite: false }
 
         this.notes.unshift(newNote)
     },
@@ -50,53 +57,58 @@ const view = {
 
         form.addEventListener('submit', (event) => {
             event.preventDefault()
-            const title = document.querySelector('.input-title').value
-            const content = content.value
-            // Получение выбранного цвета! (появится чуть позже)
-            const color = 'green'; // временно, пока не реализовали выбор цвета
-            controller.addNote(title, content, color)
+            const titleValue = document.querySelector('.input-title').value
+            const contentValue = content.value            
+            const color = document.querySelector('input[name="color"]:checked').value
+            controller.addNote(titleValue, contentValue, color)
 
             title.value = ''
             content.value = ''
-        }),
+        });
 
 
         noteList.addEventListener('click', function (event) {
             if (event.target.classList.contains('delete-button')) {
-                const noteID = Number(event.target.closets('li').id)
+                const noteID = Number(event.target.closest('li').id)
                 controller.deleteNote(noteID)
             }
-        }),
+        });
 
-            renderNotes(notes) {
-            const list = document.querySelector('.notes-list')
-            // находим контейнер для заметок и рендерим заметки в него (если заметок нет, отображаем соответствующий текст)
-            let notesHTML = ''
+    },
 
-            notes.forEach(el => {
-                notesHTML += `
+    renderNotes(notes) {
+        const list = document.querySelector('.notes-list')
+        // находим контейнер для заметок и рендерим заметки в него (если заметок нет, отображаем соответствующий текст)
+        let notesHTML = ''
+
+        notes.forEach(el => {
+            notesHTML += `
         <li id="${el.id}" class="${el.isFavorite ? 'favorite' : ''}">
-          <b class="task-title">${el.title}</b>
-          <p>${el.content}</p> 
-          <button class="delete-button" type="button">Удалить 🗑</button>
+
+        <div class="note-header ${el.color}">
+        <b class="note-title">${el.title}</b>
+        <button class="delete-button" type="button">Удалить 🗑</button>
+        </div>
+          
+          <p class="note-conten">${el.content}</p> 
+          
         </li>
       `
-                // не понимаю, как добавить выбранный цвет пользователем для заметки
-            })
+            // не понимаю, как добавить выбранный цвет пользователем для заметки
+        })
 
-            list.innerHTML = notesHTML
-            // также здесь нужно будет повесить обработчики кликов на кнопки удаления и избранного
+        list.innerHTML = notesHTML
+        // также здесь нужно будет повесить обработчики кликов на кнопки удаления и избранного
 
-        },
-        renderNotesCount(count) {
-            const currentCount = document.querySelector('.count')
-            currentCount.textContent = count
-
-        },
-        showMessage(msg) {
-            // показывает сообщение
-        }
     },
+    renderNotesCount(count) {
+        const currentCount = document.querySelector('.count')
+        currentCount.textContent = count
+
+    },
+    showMessage(msg) {
+        // показывает сообщение
+    }
 
 }
 const controller = {
