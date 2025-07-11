@@ -16,7 +16,7 @@ const MOCK_NOTES = [
     // ...
 ]
 
-const colors = {
+const colors = { 
     GREEN: 'green',
     BLUE: 'blue',
     RED: 'red',
@@ -88,7 +88,7 @@ const view = {
         <div class="note-header ${el.color}">
         <b class="note-title">${el.title}</b>
         <button class="delete-button" type="button">Удалить 🗑</button>
-        </div>
+        </div>  
           
           <p class="note-conten">${el.content}</p> 
           
