@@ -10,18 +10,20 @@ const MOCK_NOTES = [
         id: 2,
         title: 'Флекс Флекс',
         content: 'К определённым полям формы можно обратиться через form.elements по значению, указанному в атрибуте name',
-        color: 'green',
+        color: 'purple',
         isFavorite: false,
     },
     // ...
 ]
 
-const colors = { 
-    GREEN: 'green',
-    BLUE: 'blue',
-    RED: 'red',
-    YELLOW: 'yellow',
-    PURPLE: 'purple',
+const DICTIONARY_COLORS = { 
+    green: `var(--note-color-green)`,
+    blue: `var(--note-color-blue)`,
+    red: `var(--note-color-red)`,
+    yellow: `var(--note-color-yellow)`,
+    purple: `var(--note-color-purple)`,
+    error: `var(--message-color-error)`,
+    success: `var(--message-color-success)`,    
 }
 
 //модель и работа с данными
@@ -75,7 +77,7 @@ const view = {
         });
 
     },
-
+   
     renderNotes(notes) {
         const list = document.querySelector('.notes-list')
         // находим контейнер для заметок и рендерим заметки в него (если заметок нет, отображаем соответствующий текст)
@@ -85,16 +87,15 @@ const view = {
             notesHTML += `
         <li id="${el.id}" class="${el.isFavorite ? 'favorite' : ''}">
 
-        <div class="note-header ${el.color}">
+        <div class="note-header" style="background-color: ${DICTIONARY_COLORS[el.color]}">
         <b class="note-title">${el.title}</b>
         <button class="delete-button" type="button">Удалить 🗑</button>
         </div>  
           
           <p class="note-conten">${el.content}</p> 
           
-        </li>
-      `
-            // не понимаю, как добавить выбранный цвет пользователем для заметки
+        </li>      `
+            
         })
 
         list.innerHTML = notesHTML
@@ -104,7 +105,6 @@ const view = {
     renderNotesCount(count) {
         const currentCount = document.querySelector('.count')
         currentCount.textContent = count
-
     },
     showMessage(msg) {
         // показывает сообщение

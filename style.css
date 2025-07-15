@@ -1,3 +1,24 @@
+:root {
+    --note-color-yellow: #F3DB7D;
+    --note-color-red: #F37D7D;
+    --note-color-green: #C2F37D;
+    --note-color-blue: #7DE1F3;
+    --note-color-purple: #E77DF3;
+    --message-color-success: #47b27d;
+    --message-color-error: #f23d5b;
+    --main-text-color-gray: #919191;
+    --main-border-color-light-gray: #e8e8e8;
+    --buttons-primary-color-blue: #457cdc;
+    --buttons-hover-color-blue: #3b6db4;
+    --radio-checked-shadow-blue: #007BFF;
+    --color-modal-bg: rgba(0, 0, 0, 0.4);
+    --modal-font-color: #1f393d;
+    --modal-buttons-hover-color: #f0f0f0 ;
+    --color-white: #ffffff;
+    --color-black: #000000;
+    --color-red: red;
+}
+
 *,
 *::before,
 *::after {
@@ -51,19 +72,23 @@ legend {
   background-color: #F3DB7D;
 }
  
-.radio[value="purple"] {
-  background-color: #E77DF3;
-}
- 
+.radio[value="purple"] { background-color: var(--note-color-purple); }
+
+/*
+.radio[value="yellow"] { background-color: var(--note-color-yellow); }
+.radio[value="red"] { background-color: var(--note-color-red); }
+.radio[value="green"] { background-color: var(--note-color-green); }
+.radio[value="blue"] { background-color: var(--note-color-blue); }
+.radio[value="purple"] { background-color: var(--note-color-purple); }
+*/
+
+
+
+
+
+
 .radio:checked {
   border-color: white;
   box-shadow: 0 0 0 3px white, /* Внутренняя обводка для создания промежутка */
   0 0 0 4.5px #007BFF; /* Внешняя обводка */
 }
-
-/* Цвета для note-header */
-.yellow   { background-color: #F3DB7D; }
-.green    { background-color: #C2F37D; }
-.red      { background-color: #F37D7D; }
-.blue     { background-color: #7DE1F3; }
-.purple   { background-color: #E77DF3; }
