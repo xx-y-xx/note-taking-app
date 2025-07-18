@@ -16,23 +16,23 @@ const MOCK_NOTES = [
     // ...
 ]
 
-const DICTIONARY_COLORS = { 
+const DICTIONARY_COLORS = {
     green: `var(--note-color-green)`,
     blue: `var(--note-color-blue)`,
     red: `var(--note-color-red)`,
     yellow: `var(--note-color-yellow)`,
     purple: `var(--note-color-purple)`,
     error: `var(--message-color-error)`,
-    success: `var(--message-color-success)`,    
+    success: `var(--message-color-success)`,
 }
 
 //модель и работа с данными
 const model = {
-    notes: MOCK_NOTES, // notes: [],
+    notes: MOCK_NOTES,
     // notes: [],
     addNote(title, content, color) {
 
-        const newNote = { id: Math.random(), title: title, content : content, color, isFavorite: false }
+        const newNote = { id: Math.random(), title: title, content: content, color, isFavorite: false }
 
         this.notes.unshift(newNote)
     },
@@ -60,7 +60,7 @@ const view = {
         form.addEventListener('submit', (event) => {
             event.preventDefault()
             const titleValue = document.querySelector('.input-title').value
-            const contentValue = content.value            
+            const contentValue = content.value
             const color = document.querySelector('input[name="color"]:checked').value
             controller.addNote(titleValue, contentValue, color)
 
@@ -77,8 +77,15 @@ const view = {
         });
 
     },
-   
+
     renderNotes(notes) {
+        //👇спорное решение       
+        if (!model.notes.length) {
+            const emptyMessage = document.querySelector('.messages-box')
+            emptyMessage.textContent = '🔥 у тебя нет заметок'
+        }
+        //☝спорное решение
+
         const list = document.querySelector('.notes-list')
         // находим контейнер для заметок и рендерим заметки в него (если заметок нет, отображаем соответствующий текст)
         let notesHTML = ''
@@ -95,7 +102,7 @@ const view = {
           <p class="note-conten">${el.content}</p> 
           
         </li>      `
-            
+
         })
 
         list.innerHTML = notesHTML
@@ -108,6 +115,8 @@ const view = {
     },
     showMessage(msg) {
         // показывает сообщение
+        const infoMessage = document.querySelector('.messages-box')
+        infoMessage.textContent = msg
     }
 
 }
@@ -120,6 +129,11 @@ const controller = {
     },
     addNote(title, content, color) {
         // здесь можно добавить валидацию полей
+        const infoVallidationTitle = document.querySelector('.input-title').value
+        const infoVallidationContent = document.querySelector('.input-text').value
+        if (infoVallidationTitle.length > 50 || infoVallidationContent.length > 300 || infoVallidationTitle.trim().length === 0) {
+            view.showMessage('некорректный ввод')
+        }
 
         model.addNote(title, content, color)
 
@@ -127,6 +141,8 @@ const controller = {
         view.renderNotesCount(model.notes.length)
         view.showMessage('Заметка добавлена')
     },
+
+
 }
 
 function init() {
