@@ -51,8 +51,8 @@ const view = {
         this.renderNotesCount(model.notes.length) // сразу получаем текущее количество заметок
 
         const form = document.querySelector('.note-form')
-        const title = document.querySelector('.input-title')
-        const content = document.querySelector('.input-text')
+        const title = document.querySelector('.input-title')// для чего мне эти переменные ?
+        const content = document.querySelector('.input-text')// для чего мне эти переменные ?
 
         const noteList = document.querySelector('.notes-list')
 
@@ -62,6 +62,26 @@ const view = {
             const titleValue = document.querySelector('.input-title').value
             const contentValue = content.value
             const color = document.querySelector('input[name="color"]:checked').value
+            //валидация
+            if (titleValue.length === 0) {
+                this.showMessage('Заголовок заметки пустой','error')
+                return
+            }
+
+            if (contentValue.length === 0) {
+                this.showMessage('Содержимое заметки пусто', 'error')
+                return
+            }
+
+            if (titleValue.length > 50) {
+                this.showMessage('Название заметки более 50 символов','error')
+                return
+            }
+
+            if (contentValue.length > 300) {
+                this.showMessage('Длина заметки более 300 символов','error')
+                return
+            }
             controller.addNote(titleValue, contentValue, color)
 
             title.value = ''
@@ -113,10 +133,16 @@ const view = {
         const currentCount = document.querySelector('.count')
         currentCount.textContent = count
     },
-    showMessage(msg) {
+    showMessage(msg, type = 'success') {
         // показывает сообщение
-        const infoMessage = document.querySelector('.messages-box')
-        infoMessage.textContent = msg
+        const itemMessage = document.createElement('div')
+        itemMessage.className = type === 'error' ? 'message-error' : 'message-success'        
+        itemMessage.textContent = msg
+        
+        document.querySelector('.messages-box').append(itemMessage)
+        
+        setTimeout(()=>{itemMessage.remove()},3000)
+
     }
 
 }
@@ -129,11 +155,6 @@ const controller = {
     },
     addNote(title, content, color) {
         // здесь можно добавить валидацию полей
-        const infoVallidationTitle = document.querySelector('.input-title').value
-        const infoVallidationContent = document.querySelector('.input-text').value
-        if (infoVallidationTitle.length > 50 || infoVallidationContent.length > 300 || infoVallidationTitle.trim().length === 0) {
-            view.showMessage('некорректный ввод')
-        }
 
         model.addNote(title, content, color)
 
@@ -148,4 +169,4 @@ const controller = {
 function init() {
     view.init()
 }
-init() 
+document.addEventListener('DOMContentLoaded', init);

@@ -82,13 +82,12 @@ legend {
 .radio[value="purple"] { background-color: var(--note-color-purple); }
 */
 
-
-
-
-
-
 .radio:checked {
   border-color: white;
   box-shadow: 0 0 0 3px white, /* Внутренняя обводка для создания промежутка */
   0 0 0 4.5px #007BFF; /* Внешняя обводка */
 }
+
+/* сообщения ошибок */
+.message-success { background: var(--message-color-success); color: white; }
+.message-error { background: var(--message-color-error); color: white; }
