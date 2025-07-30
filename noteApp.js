@@ -26,7 +26,6 @@ const DICTIONARY_COLORS = {
     success: `var(--message-color-success)`,
 }
 
-//модель и работа с данными
 const model = {
     notes: MOCK_NOTES,
     // notes: [],
@@ -98,16 +97,13 @@ const view = {
 
     },
 
-    renderNotes(notes) {
-        //👇спорное решение       
+    renderNotes(notes) {        
         if (!model.notes.length) {
             const emptyMessage = document.querySelector('.messages-box')
             emptyMessage.textContent = '🔥 у тебя нет заметок'
         }
-        //☝спорное решение
 
-        const list = document.querySelector('.notes-list')
-        // находим контейнер для заметок и рендерим заметки в него (если заметок нет, отображаем соответствующий текст)
+        const list = document.querySelector('.notes-list')        
         let notesHTML = ''
 
         notes.forEach(el => {
@@ -133,15 +129,14 @@ const view = {
         const currentCount = document.querySelector('.count')
         currentCount.textContent = count
     },
-    showMessage(msg, type = 'success') {
-        // показывает сообщение
+    showMessage(msg, type = 'success') {        
         const itemMessage = document.createElement('div')
         itemMessage.className = type === 'error' ? 'message-error' : 'message-success'        
         itemMessage.textContent = msg
         
         document.querySelector('.messages-box').append(itemMessage)
         
-        setTimeout(()=>{itemMessage.remove()},3000)
+        setTimeout(()=>{ itemMessage.remove() },3000)
 
     }
 
@@ -154,8 +149,6 @@ const controller = {
         view.showMessage('Заметка удалена')
     },
     addNote(title, content, color) {
-        // здесь можно добавить валидацию полей
-
         model.addNote(title, content, color)
 
         view.renderNotes(model.notes)
