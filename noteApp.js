@@ -11,7 +11,7 @@ const MOCK_NOTES = [
         title: 'Флекс Флекс',
         content: 'К определённым полям формы можно обратиться через form.elements по значению, указанному в атрибуте name',
         color: 'purple',
-        isFavorite: false,
+        isFavorite: true,
     },
     // ...
 ]
@@ -41,6 +41,13 @@ const model = {
             return n.id !== noteId
         })
     },
+    noteToggleFavorite(noteID){
+        this.notes.forEach((n) => {
+            if(n.id === noteID){
+                n.isFavorite = !n.isFavorite
+            }
+        })
+    },
 }
 
 // 🔹 отображение
@@ -50,8 +57,8 @@ const view = {
         this.renderNotesCount(model.notes.length) // сразу получаем текущее количество заметок
 
         const form = document.querySelector('.note-form')
-        const title = document.querySelector('.input-title')// для чего мне эти переменные ?
-        const content = document.querySelector('.input-text')// для чего мне эти переменные ?
+        const title = document.querySelector('.input-title')// на всякий случай ?
+        const content = document.querySelector('.input-text')// на всякий случай ?
 
         const noteList = document.querySelector('.notes-list')
 
@@ -63,7 +70,7 @@ const view = {
             const color = document.querySelector('input[name="color"]:checked').value
             //валидация
             if (titleValue.length === 0) {
-                this.showMessage('Заголовок заметки пустой','error')
+                this.showMessage('Заголовок заметки пустой', 'error')
                 return
             }
 
@@ -73,12 +80,12 @@ const view = {
             }
 
             if (titleValue.length > 50) {
-                this.showMessage('Название заметки более 50 символов','error')
+                this.showMessage('Название заметки более 50 символов', 'error')
                 return
             }
 
             if (contentValue.length > 300) {
-                this.showMessage('Длина заметки более 300 символов','error')
+                this.showMessage('Длина заметки более 300 символов', 'error')
                 return
             }
             controller.addNote(titleValue, contentValue, color)
@@ -93,18 +100,23 @@ const view = {
                 const noteID = Number(event.target.closest('li').id)
                 controller.deleteNote(noteID)
             }
+            if (event.target.classList.contains('favorite-icon')){
+                const noteID = Number(event.target.closest('li').id)
+                controller.noteToggleFavorite(noteID)
+            }
         });
 
     },
 
-    renderNotes(notes) {        
+    renderNotes(notes) {
         if (!model.notes.length) {
             const emptyMessage = document.querySelector('.messages-box')
             emptyMessage.textContent = '🔥 у тебя нет заметок'
         }
 
-        const list = document.querySelector('.notes-list')        
+        const list = document.querySelector('.notes-list')
         let notesHTML = ''
+
 
         notes.forEach(el => {
             notesHTML += `
@@ -112,6 +124,7 @@ const view = {
 
         <div class="note-header" style="background-color: ${DICTIONARY_COLORS[el.color]}">
         <b class="note-title">${el.title}</b>
+        <img class="favorite-icon" src="${el.isFavorite ? 'assets/images/heart-active.svg' : 'assets/images/heart-inactive.svg'}" />
         <button class="delete-button" type="button">Удалить 🗑</button>
         </div>  
           
@@ -129,14 +142,14 @@ const view = {
         const currentCount = document.querySelector('.count')
         currentCount.textContent = count
     },
-    showMessage(msg, type = 'success') {        
+    showMessage(msg, type = 'success') {
         const itemMessage = document.createElement('div')
-        itemMessage.className = type === 'error' ? 'message-error' : 'message-success'        
+        itemMessage.className = type === 'error' ? 'message-error' : 'message-success'
         itemMessage.textContent = msg
-        
+
         document.querySelector('.messages-box').append(itemMessage)
-        
-        setTimeout(()=>{ itemMessage.remove() },3000)
+
+        setTimeout(() => { itemMessage.remove() }, 3000)
 
     }
 
@@ -155,6 +168,10 @@ const controller = {
         view.renderNotesCount(model.notes.length)
         view.showMessage('Заметка добавлена')
     },
+    noteToggleFavorite(noteID){
+        model.noteToggleFavorite(noteID)
+        view.renderNotes(model.notes)
+    }
 
 
 }
