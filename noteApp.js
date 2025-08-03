@@ -41,13 +41,16 @@ const model = {
             return n.id !== noteId
         })
     },
-    noteToggleFavorite(noteID){
+    noteToggleFavorite(noteID) {
         this.notes.forEach((n) => {
-            if(n.id === noteID){
+            if (n.id === noteID) {
                 n.isFavorite = !n.isFavorite
             }
         })
     },
+    listFavorite() {
+        return this.notes.filter((favoriteNote) => favoriteNote.isFavorite === true)
+    }
 }
 
 // 🔹 отображение
@@ -61,6 +64,7 @@ const view = {
         const content = document.querySelector('.input-text')// на всякий случай ?
 
         const noteList = document.querySelector('.notes-list')
+        const favoriteNotes = document.querySelector('.filter-box')
 
 
         form.addEventListener('submit', (event) => {
@@ -86,7 +90,7 @@ const view = {
 
             if (contentValue.length > 300) {
                 this.showMessage('Длина заметки более 300 символов', 'error')
-                return
+                return//т.к в addEventListener используется стрелочная функция, то можно использовать this
             }
             controller.addNote(titleValue, contentValue, color)
 
@@ -94,18 +98,23 @@ const view = {
             content.value = ''
         });
 
-
         noteList.addEventListener('click', function (event) {
             if (event.target.classList.contains('delete-button')) {
                 const noteID = Number(event.target.closest('li').id)
                 controller.deleteNote(noteID)
             }
-            if (event.target.classList.contains('favorite-icon')){
+            if (event.target.classList.contains('favorite-icon')) {
                 const noteID = Number(event.target.closest('li').id)
                 controller.noteToggleFavorite(noteID)
             }
         });
-
+        favoriteNotes.addEventListener('change', (event) => {//🔹особенность работы change с input
+            const checkboxFavorite = document.querySelector('.checkboxFavorite')
+            if (checkboxFavorite.checked) {//🔹change возвращает булевое значение при изменеии input типа checkbox
+                controller.listFavorite()//я напрямую обращаюсь в model и там мутируюю массив
+            } else
+                this.renderNotes(model.notes)
+        })
     },
 
     renderNotes(notes) {
@@ -168,9 +177,13 @@ const controller = {
         view.renderNotesCount(model.notes.length)
         view.showMessage('Заметка добавлена')
     },
-    noteToggleFavorite(noteID){
+    noteToggleFavorite(noteID) {
         model.noteToggleFavorite(noteID)
         view.renderNotes(model.notes)
+    },
+    listFavorite() {
+        model.listFavorite()
+        view.renderNotes(model.listFavorite())//возвращает изменнённый массив из model        
     }
 
 
