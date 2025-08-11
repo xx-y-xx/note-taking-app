@@ -26,20 +26,36 @@ const DICTIONARY_COLORS = {
     success: `var(--message-color-success)`,
 }
 
+
 const model = {
-    notes: MOCK_NOTES,
-    // notes: [],
+    
+    
+    saveStorageNotes(){
+        localStorage.setItem('notesStorage', JSON.stringify(this.notes)) 
+    },
+    launchLocalStorage(){
+        const DataStorage = localStorage.getItem('notesStorage')
+        if (DataStorage) {
+            this.notes = JSON.parse(DataStorage)
+        } else {
+            this.notes = []
+        }
+    },
     addNote(title, content, color) {
 
         const newNote = { id: Math.random(), title: title, content: content, color, isFavorite: false }
 
         this.notes.unshift(newNote)
+        //тест
+        this.saveStorageNotes()        
     },
 
     deleteNote(noteId) {
         this.notes = this.notes.filter((n) => {
             return n.id !== noteId
         })
+        //тест
+        this.saveStorageNotes()
     },
     noteToggleFavorite(noteID) {
         this.notes.forEach((n) => {
@@ -47,6 +63,8 @@ const model = {
                 n.isFavorite = !n.isFavorite
             }
         })
+        //тест
+        this.saveStorageNotes()
     },
     listFavorite() {
         return this.notes.filter((favoriteNote) => favoriteNote.isFavorite === true)
@@ -56,6 +74,7 @@ const model = {
 // 🔹 отображение
 const view = {
     init() {
+        model.launchLocalStorage()
         this.renderNotes(model.notes)
         this.renderNotesCount(model.notes.length) // сразу получаем текущее количество заметок
 
@@ -64,7 +83,7 @@ const view = {
         const content = document.querySelector('.input-text')// на всякий случай ?
 
         const noteList = document.querySelector('.notes-list')
-        const favoriteNotes = document.querySelector('.filter-box')
+        const checkboxFavoriteToRender = document.querySelector('.checkboxFavorite')
 
 
         form.addEventListener('submit', (event) => {
@@ -108,27 +127,28 @@ const view = {
                 controller.noteToggleFavorite(noteID)
             }
         });
-        favoriteNotes.addEventListener('change', (event) => {//🔹особенность работы change с input
-            const checkboxFavorite = document.querySelector('.checkboxFavorite')
-            if (checkboxFavorite.checked) {//🔹change возвращает булевое значение при изменеии input типа checkbox
-                controller.listFavorite()//я напрямую обращаюсь в model и там мутируюю массив
-            } else
-                this.renderNotes(model.notes)
-        })
+
+        checkboxFavoriteToRender.addEventListener('change', (event) => { //🔹особенность работы change с input
+            controller.isCheckboxFavirite(event.target.checked)//🔹change возвращает булевое значение при изменеии input типа checkbox
+        });
+
     },
 
     renderNotes(notes) {
+        const emptyMessage = document.querySelector('.messages-box')//костыль для вывода сообщений о пустых заметках
+        const list = document.querySelector('.notes-list')// фарширую этот тег заметками
+
         if (!model.notes.length) {
-            const emptyMessage = document.querySelector('.messages-box')
-            emptyMessage.textContent = '🔥 у тебя нет заметок'
-        }
+            emptyMessage.textContent = 'У вас нет ещё ни одной заметки. Заполните поля выше'
 
-        const list = document.querySelector('.notes-list')
-        let notesHTML = ''
+            list.innerHTML = ''
+        } else {
+            emptyMessage.textContent = ''//удаляю старые сообщения
 
+            let notesHTML = ''
 
-        notes.forEach(el => {
-            notesHTML += `
+            notes.forEach(el => {
+                notesHTML += `
         <li id="${el.id}" class="${el.isFavorite ? 'favorite' : ''}">
 
         <div class="note-header" style="background-color: ${DICTIONARY_COLORS[el.color]}">
@@ -141,11 +161,10 @@ const view = {
           
         </li>      `
 
-        })
+            })
 
-        list.innerHTML = notesHTML
-        // также здесь нужно будет повесить обработчики кликов на кнопки удаления и избранного
-
+            list.innerHTML = notesHTML
+        }
     },
     renderNotesCount(count) {
         const currentCount = document.querySelector('.count')
@@ -159,9 +178,7 @@ const view = {
         document.querySelector('.messages-box').append(itemMessage)
 
         setTimeout(() => { itemMessage.remove() }, 3000)
-
     }
-
 }
 const controller = {
     deleteNote(noteID) {
@@ -178,15 +195,17 @@ const controller = {
         view.showMessage('Заметка добавлена')
     },
     noteToggleFavorite(noteID) {
-        model.noteToggleFavorite(noteID)
+        model.noteToggleFavorite(noteID)   
         view.renderNotes(model.notes)
     },
-    listFavorite() {
-        model.listFavorite()
-        view.renderNotes(model.listFavorite())//возвращает изменнённый массив из model        
+    isCheckboxFavirite(isFavorite) {
+        if (isFavorite) {
+            model.listFavorite()//я напрямую обращаюсь в model и там мутирую массив
+            view.renderNotes(model.listFavorite())
+        } else {
+            view.renderNotes(model.notes)
+        }
     }
-
-
 }
 
 function init() {
