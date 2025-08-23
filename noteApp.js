@@ -26,55 +26,89 @@ const DICTIONARY_COLORS = {
     success: `var(--message-color-success)`,
 }
 
-
 const model = {
-    
-    
-    saveStorageNotes(){
-        localStorage.setItem('notesStorage', JSON.stringify(this.notes)) 
+
+    notes: [],
+
+    saveStorageNotes() { //хранение данных в кэши
+        localStorage.setItem('notesStorage', JSON.stringify(this.notes))
     },
-    launchLocalStorage(){
+    launchLocalStorage() { // потом можно зарефакторить через тернальный оператор
         const DataStorage = localStorage.getItem('notesStorage')
         if (DataStorage) {
             this.notes = JSON.parse(DataStorage)
         } else {
-            this.notes = []
+            // this.notes = []
+            this.notes = [...MOCK_NOTES]
+            // this.saveStorageNotes() // спорное решение которое не сработает
         }
     },
-    addNote(title, content, color) {
+    updateCentral(callbackFunction) {
+        callbackFunction(this.notes)
+        // (this.notes)callbackFunction
 
-        const newNote = { id: Math.random(), title: title, content: content, color, isFavorite: false }
-
-        this.notes.unshift(newNote)
-        //тест
-        this.saveStorageNotes()        
-    },
-
-    deleteNote(noteId) {
-        this.notes = this.notes.filter((n) => {
-            return n.id !== noteId
-        })
-        //тест
         this.saveStorageNotes()
+    },
+    /*👇
+        addNote(title, content, color) {
+    
+            const newNote = { id: Math.random(), title: title, content: content, color, isFavorite: false }
+    
+            this.notes.unshift(newNote)        
+        },
+    
+        deleteNote(noteId) {
+            this.notes = this.notes.filter((n) => {
+                return n.id !== noteId
+            })       
+        },
+        noteToggleFavorite(noteID) {
+            this.notes.forEach((n) => {
+                if (n.id === noteID) {
+                    n.isFavorite = !n.isFavorite
+                }
+            })        
+        },
+        listFavorite() {
+            return this.notes.filter((favoriteNote) => favoriteNote.isFavorite === true)
+        }☝ */
+    addNote(title, content, color) {
+        this.updateCentral(notesArray => {
+            const newNote = {
+                id: Math.random(),
+                title,
+                content,
+                color,
+                isFavorite: false
+            }
+            notesArray.unshift(newNote)
+        })        
+    },
+    deleteNote(noteId) {
+        this.updateCentral(notesArray =>{
+             const deleteIndex = notesArray.findIndex(nid => nid.id === noteId)
+             if (deleteIndex !== -1) notesArray.splice (deleteIndex, 1)
+        })
     },
     noteToggleFavorite(noteID) {
-        this.notes.forEach((n) => {
-            if (n.id === noteID) {
+        this.updateCentral(notesArray => {notesArray.forEach((n) => {
+            if (n.id === noteID){
                 n.isFavorite = !n.isFavorite
             }
-        })
-        //тест
-        this.saveStorageNotes()
+            })})
     },
     listFavorite() {
-        return this.notes.filter((favoriteNote) => favoriteNote.isFavorite === true)
-    }
+            return this.notes.filter((favoriteNote) => favoriteNote.isFavorite === true)
+        }
+
+    
 }
 
 // 🔹 отображение
 const view = {
     init() {
-        model.launchLocalStorage()
+        // controller.launchLocalStorage() 🔥🔥🔥
+
         this.renderNotes(model.notes)
         this.renderNotesCount(model.notes.length) // сразу получаем текущее количество заметок
 
@@ -183,6 +217,9 @@ const view = {
 const controller = {
     deleteNote(noteID) {
         model.deleteNote(noteID)
+        //запись 🔥🔥🔥
+        // model.saveStorageNotes()
+
         view.renderNotes(model.notes)
         view.renderNotesCount(model.notes.length)
         view.showMessage('Заметка удалена')
@@ -190,12 +227,18 @@ const controller = {
     addNote(title, content, color) {
         model.addNote(title, content, color)
 
+        //запись 🔥🔥🔥
+        // model.saveStorageNotes()
+
         view.renderNotes(model.notes)
         view.renderNotesCount(model.notes.length)
         view.showMessage('Заметка добавлена')
     },
     noteToggleFavorite(noteID) {
-        model.noteToggleFavorite(noteID)   
+        model.noteToggleFavorite(noteID)
+        //запись 🔥🔥🔥
+        // model.saveStorageNotes()
+
         view.renderNotes(model.notes)
     },
     isCheckboxFavirite(isFavorite) {
@@ -205,7 +248,10 @@ const controller = {
         } else {
             view.renderNotes(model.notes)
         }
-    }
+    },
+    // launchLocalStorage() {// хранение данных 🔥🔥🔥
+    // model.launchLocalStorage()
+    // }
 }
 
 function init() {
