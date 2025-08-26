@@ -29,7 +29,7 @@ const DICTIONARY_COLORS = {
 const model = {
 
     notes: [],
-
+//🔸 вспомогательные методы
     saveStorageNotes() { //хранение данных в кэши
         localStorage.setItem('notesStorage', JSON.stringify(this.notes))
     },
@@ -43,35 +43,14 @@ const model = {
             // this.saveStorageNotes() // спорное решение которое не сработает
         }
     },
-    updateCentral(callbackFunction) {
-        callbackFunction(this.notes)
-        // (this.notes)callbackFunction
-
+    updateCentral(callbackFunction) {//универсальный метод обновления + автосохранение
+        callbackFunction(this.notes)        
         this.saveStorageNotes()
-    },
-    /*👇
-        addNote(title, content, color) {
-    
-            const newNote = { id: Math.random(), title: title, content: content, color, isFavorite: false }
-    
-            this.notes.unshift(newNote)        
-        },
-    
-        deleteNote(noteId) {
-            this.notes = this.notes.filter((n) => {
-                return n.id !== noteId
-            })       
-        },
-        noteToggleFavorite(noteID) {
-            this.notes.forEach((n) => {
-                if (n.id === noteID) {
-                    n.isFavorite = !n.isFavorite
-                }
-            })        
-        },
-        listFavorite() {
-            return this.notes.filter((favoriteNote) => favoriteNote.isFavorite === true)
-        }☝ */
+    },    
+    findNoteByID(noteFind) {
+        return this.notes.find(n => n.id === noteFind)},
+
+//🔸 работа с данными
     addNote(title, content, color) {
         this.updateCentral(notesArray => {
             const newNote = {
@@ -85,29 +64,29 @@ const model = {
         })        
     },
     deleteNote(noteId) {
-        this.updateCentral(notesArray =>{
-             const deleteIndex = notesArray.findIndex(nid => nid.id === noteId)
-             if (deleteIndex !== -1) notesArray.splice (deleteIndex, 1)
-        })
+           this.updateCentral(notesArray =>{
+            const deleteIndex = this.findNoteByID(noteId)
+            if (deleteIndex) {
+              const deleteNoteIndex = notesArray.indexOf(deleteIndex)
+              notesArray.splice(deleteNoteIndex,1)
+            }
+           })
     },
     noteToggleFavorite(noteID) {
-        this.updateCentral(notesArray => {notesArray.forEach((n) => {
-            if (n.id === noteID){
-                n.isFavorite = !n.isFavorite
-            }
-            })})
-    },
+        this.updateCentral(notesArray => {//зря рефакторил😱, теперь я не могу обратится к notesArray и работаю только через this.notes
+           const toggleNote = this.findNoteByID(noteID)//😱через find было бы надёжнее 
+           if (toggleNote) toggleNote.isFavorite = !toggleNote.isFavorite
+        })
+     },
     listFavorite() {
             return this.notes.filter((favoriteNote) => favoriteNote.isFavorite === true)
-        }
-
-    
+        }    
 }
 
 // 🔹 отображение
 const view = {
     init() {
-        // controller.launchLocalStorage() 🔥🔥🔥
+        controller.launchLocalStorage()
 
         this.renderNotes(model.notes)
         this.renderNotesCount(model.notes.length) // сразу получаем текущее количество заметок
@@ -214,21 +193,17 @@ const view = {
         setTimeout(() => { itemMessage.remove() }, 3000)
     }
 }
+//🔹
 const controller = {
     deleteNote(noteID) {
         model.deleteNote(noteID)
-        //запись 🔥🔥🔥
-        // model.saveStorageNotes()
 
         view.renderNotes(model.notes)
         view.renderNotesCount(model.notes.length)
         view.showMessage('Заметка удалена')
     },
     addNote(title, content, color) {
-        model.addNote(title, content, color)
-
-        //запись 🔥🔥🔥
-        // model.saveStorageNotes()
+        model.addNote(title, content, color)        
 
         view.renderNotes(model.notes)
         view.renderNotesCount(model.notes.length)
@@ -236,9 +211,6 @@ const controller = {
     },
     noteToggleFavorite(noteID) {
         model.noteToggleFavorite(noteID)
-        //запись 🔥🔥🔥
-        // model.saveStorageNotes()
-
         view.renderNotes(model.notes)
     },
     isCheckboxFavirite(isFavorite) {
@@ -249,9 +221,9 @@ const controller = {
             view.renderNotes(model.notes)
         }
     },
-    // launchLocalStorage() {// хранение данных 🔥🔥🔥
-    // model.launchLocalStorage()
-    // }
+    launchLocalStorage() {
+    model.launchLocalStorage()
+    }
 }
 
 function init() {
