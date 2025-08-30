@@ -27,8 +27,8 @@ const DICTIONARY_COLORS = {
 }
 
 const model = {
-
     notes: [],
+    isFavorite: false,
 //🔸 вспомогательные методы
     saveStorageNotes() { //хранение данных в кэши
         localStorage.setItem('notesStorage', JSON.stringify(this.notes))
@@ -79,6 +79,7 @@ const model = {
         })
      },
     listFavorite() {
+        this.isFavorite = !this.isFavorite //вспомогательный флаг переключения
             return this.notes.filter((favoriteNote) => favoriteNote.isFavorite === true)
         }    
 }
@@ -128,12 +129,14 @@ const view = {
 
             title.value = ''
             content.value = ''
+            //сброс на исходный цвет заметки
+            document.querySelector('input[value="yellow"]').checked = true
         });
 
         noteList.addEventListener('click', function (event) {
             if (event.target.classList.contains('delete-button')) {
                 const noteID = Number(event.target.closest('li').id)
-                controller.deleteNote(noteID)
+                controller.deleteNote(noteID)                
             }
             if (event.target.classList.contains('favorite-icon')) {
                 const noteID = Number(event.target.closest('li').id)
@@ -142,7 +145,7 @@ const view = {
         });
 
         checkboxFavoriteToRender.addEventListener('change', (event) => { //🔹особенность работы change с input
-            controller.isCheckboxFavirite(event.target.checked)//🔹change возвращает булевое значение при изменеии input типа checkbox
+            controller.isCheckboxFavirite(event.target.checked)//🔹change возвращает булевое значение при изменеии input типа checkbox                              
         });
 
     },
@@ -196,9 +199,17 @@ const view = {
 //🔹
 const controller = {
     deleteNote(noteID) {
-        model.deleteNote(noteID)
+        /*model.deleteNote(noteID)
 
         view.renderNotes(model.notes)
+        view.renderNotesCount(model.notes.length)
+        view.showMessage('Заметка удалена')*/        
+
+        model.deleteNote(noteID)
+        console.log(model.isFavorite)
+
+        model.isFavorite ?  view.renderNotes(model.notes) :  this.isCheckboxFavirite(true)
+        
         view.renderNotesCount(model.notes.length)
         view.showMessage('Заметка удалена')
     },
@@ -214,9 +225,11 @@ const controller = {
         view.renderNotes(model.notes)
     },
     isCheckboxFavirite(isFavorite) {
+        console.log(model.isFavorite)
+
         if (isFavorite) {
-            model.listFavorite()//я напрямую обращаюсь в model и там мутирую массив
-            view.renderNotes(model.listFavorite())
+            // model.listFavorite()//я напрямую обращаюсь в model и там мутирую массив
+            view.renderNotes(model.listFavorite())            
         } else {
             view.renderNotes(model.notes)
         }
