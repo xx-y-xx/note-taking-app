@@ -28,8 +28,8 @@ const DICTIONARY_COLORS = {
 
 const model = {
     notes: [],
-    isFavorite: false,
-//🔸 вспомогательные методы
+    isFilteringFavorites: false,
+    //🔸 вспомогательные методы
     saveStorageNotes() { //хранение данных в кэши
         localStorage.setItem('notesStorage', JSON.stringify(this.notes))
     },
@@ -44,13 +44,14 @@ const model = {
         }
     },
     updateCentral(callbackFunction) {//универсальный метод обновления + автосохранение
-        callbackFunction(this.notes)        
+        callbackFunction(this.notes)
         this.saveStorageNotes()
-    },    
+    },
     findNoteByID(noteFind) {
-        return this.notes.find(n => n.id === noteFind)},
+        return this.notes.find(n => n.id === noteFind)
+    },
 
-//🔸 работа с данными
+    //🔸 работа с данными
     addNote(title, content, color) {
         this.updateCentral(notesArray => {
             const newNote = {
@@ -61,33 +62,31 @@ const model = {
                 isFavorite: false
             }
             notesArray.unshift(newNote)
-        })        
+        })
     },
     deleteNote(noteId) {
-           this.updateCentral(notesArray =>{
+        this.updateCentral(notesArray => {
             const deleteIndex = this.findNoteByID(noteId)
             if (deleteIndex) {
-              const deleteNoteIndex = notesArray.indexOf(deleteIndex)
-              notesArray.splice(deleteNoteIndex,1)
+                const deleteNoteIndex = notesArray.indexOf(deleteIndex)
+                notesArray.splice(deleteNoteIndex, 1)
             }
-           })
+        })
     },
     noteToggleFavorite(noteID) {
         this.updateCentral(notesArray => {//зря рефакторил😱, теперь я не могу обратится к notesArray и работаю только через this.notes
-           const toggleNote = this.findNoteByID(noteID)//😱через find было бы надёжнее 
-           if (toggleNote) toggleNote.isFavorite = !toggleNote.isFavorite
+            const toggleNote = this.findNoteByID(noteID)//😱через find было бы надёжнее 
+            if (toggleNote) toggleNote.isFavorite = !toggleNote.isFavorite
         })
-     },
+    },
     listFavorite() {
-        this.isFavorite = !this.isFavorite //вспомогательный флаг переключения
-            return this.notes.filter((favoriteNote) => favoriteNote.isFavorite === true)
-        }    
+        return this.notes.filter((favoriteNote) => favoriteNote.isFavorite === true)
+    }
 }
 
 // 🔹 отображение
 const view = {
     init() {
-        controller.launchLocalStorage()
 
         this.renderNotes(model.notes)
         this.renderNotesCount(model.notes.length) // сразу получаем текущее количество заметок
@@ -136,7 +135,7 @@ const view = {
         noteList.addEventListener('click', function (event) {
             if (event.target.classList.contains('delete-button')) {
                 const noteID = Number(event.target.closest('li').id)
-                controller.deleteNote(noteID)                
+                controller.deleteNote(noteID)
             }
             if (event.target.classList.contains('favorite-icon')) {
                 const noteID = Number(event.target.closest('li').id)
@@ -144,8 +143,8 @@ const view = {
             }
         });
 
-        checkboxFavoriteToRender.addEventListener('change', (event) => { //🔹особенность работы change с input
-            controller.isCheckboxFavirite(event.target.checked)//🔹change возвращает булевое значение при изменеии input типа checkbox                              
+        checkboxFavoriteToRender.addEventListener('change', (event) => { //🔹особенность работы change с input            
+            controller.getVisibleNotes(event.target.checked)//🔹change возвращает булевое значение при изменеии input типа checkbox            
         });
 
     },
@@ -154,7 +153,7 @@ const view = {
         const emptyMessage = document.querySelector('.messages-box')//костыль для вывода сообщений о пустых заметках
         const list = document.querySelector('.notes-list')// фарширую этот тег заметками
 
-        if (!model.notes.length) {
+        if (!notes.length) {
             emptyMessage.textContent = 'У вас нет ещё ни одной заметки. Заполните поля выше'
 
             list.innerHTML = ''
@@ -168,7 +167,7 @@ const view = {
         <li id="${el.id}" class="${el.isFavorite ? 'favorite' : ''}">
 
         <div class="note-header" style="background-color: ${DICTIONARY_COLORS[el.color]}">
-        <b class="note-title">${el.title}</b>
+        <h3 class="note-title">${el.title}</h3>
         <img class="favorite-icon" src="${el.isFavorite ? 'assets/images/heart-active.svg' : 'assets/images/heart-inactive.svg'}" />
         <button class="delete-button" type="button">Удалить 🗑</button>
         </div>  
@@ -199,47 +198,33 @@ const view = {
 //🔹
 const controller = {
     deleteNote(noteID) {
-        /*model.deleteNote(noteID)
-
-        view.renderNotes(model.notes)
-        view.renderNotesCount(model.notes.length)
-        view.showMessage('Заметка удалена')*/        
-
         model.deleteNote(noteID)
-        console.log(model.isFavorite)
 
-        model.isFavorite ?  view.renderNotes(model.notes) :  this.isCheckboxFavirite(true)
-        
+        this.getVisibleNotes(showFavoritesOnly = model.isFilteringFavorites)
         view.renderNotesCount(model.notes.length)
         view.showMessage('Заметка удалена')
     },
     addNote(title, content, color) {
-        model.addNote(title, content, color)        
-
-        view.renderNotes(model.notes)
+        model.addNote(title, content, color)
+        
+        this.getVisibleNotes(showFavoritesOnly = model.isFilteringFavorites)
         view.renderNotesCount(model.notes.length)
         view.showMessage('Заметка добавлена')
     },
     noteToggleFavorite(noteID) {
-        model.noteToggleFavorite(noteID)
-        view.renderNotes(model.notes)
+        model.noteToggleFavorite(noteID)        
+        this.getVisibleNotes(showFavoritesOnly = model.isFilteringFavorites)
     },
-    isCheckboxFavirite(isFavorite) {
-        console.log(model.isFavorite)
-
-        if (isFavorite) {
-            // model.listFavorite()//я напрямую обращаюсь в model и там мутирую массив
-            view.renderNotes(model.listFavorite())            
-        } else {
-            view.renderNotes(model.notes)
-        }
+    //вспомогаетльный метод    
+    getVisibleNotes(showFavoritesOnly) {
+        model.isFilteringFavorites = showFavoritesOnly
+        const visible = model.isFilteringFavorites ? model.listFavorite() : model.notes
+        view.renderNotes(visible)
     },
-    launchLocalStorage() {
-    model.launchLocalStorage()
-    }
 }
 
 function init() {
+    model.launchLocalStorage()
     view.init()
 }
 document.addEventListener('DOMContentLoaded', init);
