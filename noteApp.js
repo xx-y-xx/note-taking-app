@@ -154,9 +154,8 @@ const view = {
         const list = document.querySelector('.notes-list')// фарширую этот тег заметками
 
         if (!notes.length) {
-            emptyMessage.textContent = 'У вас нет ещё ни одной заметки. Заполните поля выше'
-
-            list.innerHTML = ''
+            emptyMessage.innerHTML = '<div class="empty-list">У вас нет ещё ни одной заметки. Заполните поля выше</div>';
+            list.innerHTML = '';
         } else {
             emptyMessage.textContent = ''//удаляю старые сообщения
 
@@ -166,16 +165,15 @@ const view = {
                 notesHTML += `
         <li id="${el.id}" class="${el.isFavorite ? 'favorite' : ''}">
 
-        <div class="note-header" style="background-color: ${DICTIONARY_COLORS[el.color]}">
-        <h3 class="note-title">${el.title}</h3>
-        <img class="favorite-icon" src="${el.isFavorite ? 'assets/images/heart-active.svg' : 'assets/images/heart-inactive.svg'}" />
-        <button class="delete-button" type="button">Удалить 🗑</button>
-        </div>  
-          
-          <p class="note-conten">${el.content}</p> 
-          
+            <div class="note-header" style="background-color: ${DICTIONARY_COLORS[el.color]}">
+                <h3 class="note-title">${el.title}</h3>
+                <div class="buttons">
+                    <input class="favorite-icon" type="checkbox" ${el.isFavorite ? 'checked' : ''}>
+                    <button class="delete-button" type="button"></button>
+                </div>        
+            </div>            
+          <p class="note-conten">${el.content}</p>           
         </li>      `
-
             })
 
             list.innerHTML = notesHTML
@@ -206,13 +204,13 @@ const controller = {
     },
     addNote(title, content, color) {
         model.addNote(title, content, color)
-        
+
         this.getVisibleNotes(showFavoritesOnly = model.isFilteringFavorites)
         view.renderNotesCount(model.notes.length)
         view.showMessage('Заметка добавлена')
     },
     noteToggleFavorite(noteID) {
-        model.noteToggleFavorite(noteID)        
+        model.noteToggleFavorite(noteID)
         this.getVisibleNotes(showFavoritesOnly = model.isFilteringFavorites)
     },
     //вспомогаетльный метод    

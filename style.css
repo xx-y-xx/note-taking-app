@@ -55,32 +55,13 @@ legend {
   border-radius: 50%;
   background-color: green;
 }
- 
-.radio[value="red"] {
-  background-color: #F37D7D;
-}
- 
-.radio[value="green"] {
-  background-color: #C2F37D;
-}
- 
-.radio[value="blue"] {
-  background-color: #7DE1F3;
-}
- 
-.radio[value="yellow"] {
-  background-color: #F3DB7D;
-}
- 
-.radio[value="purple"] { background-color: var(--note-color-purple); }
 
-/*
 .radio[value="yellow"] { background-color: var(--note-color-yellow); }
 .radio[value="red"] { background-color: var(--note-color-red); }
 .radio[value="green"] { background-color: var(--note-color-green); }
 .radio[value="blue"] { background-color: var(--note-color-blue); }
 .radio[value="purple"] { background-color: var(--note-color-purple); }
-*/
+
 
 .radio:checked {
   border-color: white;
@@ -91,3 +72,47 @@ legend {
 /* сообщения ошибок */
 .message-success { background: var(--message-color-success); color: white; }
 .message-error { background: var(--message-color-error); color: white; }
+/*конопка удаления*/
+.delete-button {
+    width: 16px;
+    height: 16px;
+    background-image: url("assets/images/trash.svg");
+    background-repeat: no-repeat;
+    background-size: contain;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+/*избранное*/
+.favorite-icon {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background-image: url("assets/images/heart-inactive.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+
+.favorite-icon:checked {
+    background-image: url("assets/images/heart-active.svg");
+}
+/*Hover-эффекты*/
+.delete-button:hover {
+  opacity: 0.7;
+}
+
+.favorite-icon:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
+}
+
+/*Сообщение о пустом списке*/
+.empty-list {
+  text-align: center;
+  color: var(--main-text-color-gray);
+  padding: 20px;
+  font-style: italic;
+}
+
+
