@@ -172,7 +172,7 @@ const view = {
                     <button class="delete-button" type="button"></button>
                 </div>        
             </div>            
-          <p class="note-conten">${el.content}</p>           
+          <p class="note-content">${el.content}</p>           
         </li>      `
             })
 

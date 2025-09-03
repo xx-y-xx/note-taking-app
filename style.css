@@ -114,5 +114,97 @@ legend {
   padding: 20px;
   font-style: italic;
 }
+/*Fexbox сетка для созданных заметок*/
+.notes-list {
+  display: flex;
+  flex-wrap: wrap;      /* разрешаем перенос строк */
+  gap: 16px;            /* отступы между карточками */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  justify-content: flex-start; /* выравнивание по левому краю */
+}
 
+.notes-list li {
+  flex: 1 1 250px;
+  max-width: 300px;
+  background: var(--color-white);  /* фон карточки */
+  border-radius: 8px; /* скруглённые углы */
+  overflow: hidden; /* чтобы фон заголовка не выпирал */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* лёгкая тень */
+  display: flex;
+  flex-direction: column; /* содержимое идёт сверху вниз */
+}
 
+/* Заголовок карточки */
+.note-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 8px 8px 0 0; /* скругляем верхние углы у цветного фона */
+}
+
+/* Тело заметки */
+.note-content {
+  padding: 12px;
+  color: var(--modal-font-color);
+  font-size: 14px;
+  line-height: 1.4;
+}
+/* Заголовок текста */
+.note-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--color-black);
+}
+
+/* Кнопки в заголовке */
+.buttons {
+  display: flex;
+  gap: 8px;              /* расстояние между иконками */
+  align-items: center;
+}
+/*стиризация полей ввода*/
+.input-title,
+.input-text {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  border: 1px solid var(--main-border-color-light-gray);
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.input-text {
+  resize: vertical; /* можно растягивать вниз */
+  min-height: 80px;
+}
+/*стиризация кнопки*/
+.add-button {
+  padding: 10px 16px;
+  background-color: var(--buttons-primary-color-blue);
+  color: var(--color-white);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.add-button:hover {
+  background-color: var(--buttons-hover-color-blue);
+}
+/*адаптив*/
+@media screen and (max-width: 768px) {
+  .notes-list {
+    flex-direction: column; /* карточки в колонку */
+    align-items: center;
+  }
+
+  .notes-list li {
+    max-width: 100%;
+  }
+}
