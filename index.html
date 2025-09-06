@@ -10,42 +10,36 @@
 
 <body>
     <div id="app"></div>
-    <header class="header">        
+    <header class="header">
+        <div class="logo">
+            <img src="assets/images/📝Notes.svg" alt="блокнот">
+        </div>
         <div class="counter">
             <img src="assets/images/notes.svg" alt="блокнот">
             <span>Всего заметок:</span>
             <span class="count">0</span>
     </header>
     <main>
-        <form class="note-form" name="notes">
-            <input type="text" class="input-title" placeholder="Название заметки" name="note" />
-            <textarea class="input-text" placeholder="Напишите описание новой заметки..."></textarea>
-            <button type="submit" class="add-button">➕ Добавить заметку</button>
-            
-            <fieldset class="fieldset"><!-- кнопки для выбора цвета -->
-                <legend class="label">Выберите цвет заметки</legend>
-                <ul class="radio-list">
-                    <li>
-                        <input checked class="radio" type="radio" name="color" value="yellow" aria-label="yellow" />
-                    </li>
-                    <li>
-                        <input class="radio" type="radio" name="color" value="red" aria-label="red" />
-                    </li>
-                    <li>
-                        <input class="radio" type="radio" name="color" value="green" aria-label="green" />
-                    </li>
-                    <li>
-                        <input class="radio" type="radio" name="color" value="blue" aria-label="blue" />
-                    </li>
-                    <li>
-                        <input class="radio" type="radio" name="color" value="purple" aria-label="purple" />
-                    </li>
-                </ul>
-            </fieldset>
-        </form>
+        <section class="input-notes">
+            <form class="note-form" name="notes">
+                <input type="text" class="input-title" placeholder="Название заметки" name="note" />
+                <textarea class="input-text" placeholder="Напишите описание новой заметки..."></textarea>
+                <button type="submit" class="add-button">➕ Добавить заметку</button>
+
+                <fieldset class="fieldset"><!-- кнопки для выбора цвета -->
+                    <legend class="label">Выберите цвет заметки</legend>
+                    <ul class="radio-list">
+                        <li><input checked class="radio" type="radio" name="color" value="yellow" aria-label="yellow" /></li>
+                        <li><input class="radio" type="radio" name="color" value="red" aria-label="red" /></li>
+                        <li><input class="radio" type="radio" name="color" value="green" aria-label="green" /></li>
+                        <li><input class="radio" type="radio" name="color" value="blue" aria-label="blue" /></li>
+                        <li><input class="radio" type="radio" name="color" value="purple" aria-label="purple" /></li>
+                    </ul>
+                </fieldset>
+            </form>
+        </section>
         <div class="filter-box">
             <input class="checkboxFavorite" type="checkbox">Показать избранные заметки
-            
         </div>
         <ul class="notes-list">
             <!-- Сюда будут рендерится заметки из JavaScript -->

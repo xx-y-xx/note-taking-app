@@ -25,6 +25,13 @@ const DICTIONARY_COLORS = {
     error: `var(--message-color-error)`,
     success: `var(--message-color-success)`,
 }
+const messages = {
+    deleteMessage: { image: 'assets/images/Done.svg', text: 'Заметка удалена'},
+    addMessage: {image: 'assets/images/Done.svg', text: 'Заметка добавлена' },
+    messageWarning: {image: 'assets/images/warning.svg', class: 'message-warning', text: 'Заполните все поля'},
+    messageWarningLength: {image: 'assets/images/warning.svg', class: 'message-warning', text: 'Максимальная длина заголовка - 50 символов'},
+    messageWarningContentLength: { text: 'Максимальная длина описания - 300 символов', image: 'assets/images/warning.svg', class: 'message-warning' }
+}
 
 const model = {
     notes: [],
