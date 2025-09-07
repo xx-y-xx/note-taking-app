@@ -70,8 +70,43 @@ legend {
 }
 
 /* сообщения ошибок */
-.message-success { background: var(--message-color-success); color: white; }
-.message-error { background: var(--message-color-error); color: white; }
+.message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-white);
+  box-shadow: 0 8px 12px rgba(11,12,13,.08),
+              0 16px 24px rgba(11,12,13,.04),
+              0 1px 2px rgba(11,12,13,.08);
+  animation: appearance 0.4s ease-in-out;
+}
+
+.message-success { background: var(--message-color-success); color: var(--color-white); }
+.message-error { background: var(--message-color-error); color: var(--color-white); }
+.message-warning {
+  background: var(--message-color-error);
+  color: var(--color-white);
+}
+
+@keyframes appearance {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+/*блок для сообщейний */
+.messages-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
 /*конопка удаления*/
 .delete-button {
     width: 16px;

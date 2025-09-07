@@ -26,11 +26,11 @@ const DICTIONARY_COLORS = {
     success: `var(--message-color-success)`,
 }
 const messages = {
-    deleteMessage: { image: 'assets/images/Done.svg', text: 'Заметка удалена'},
-    addMessage: {image: 'assets/images/Done.svg', text: 'Заметка добавлена' },
+    deleteMessage: { image: 'assets/images/done.svg', class: 'message-success', text: 'Заметка удалена'},
+    addMessage: {image: 'assets/images/done.svg', class: 'message-success', text: 'Заметка добавлена' },
     messageWarning: {image: 'assets/images/warning.svg', class: 'message-warning', text: 'Заполните все поля'},
     messageWarningLength: {image: 'assets/images/warning.svg', class: 'message-warning', text: 'Максимальная длина заголовка - 50 символов'},
-    messageWarningContentLength: { text: 'Максимальная длина описания - 300 символов', image: 'assets/images/warning.svg', class: 'message-warning' }
+    messageWarningContentLength: {image: 'assets/images/warning.svg', class: 'message-warning', text: 'Максимальная длина описания - 300 символов'}
 }
 
 const model = {
@@ -112,23 +112,16 @@ const view = {
             const contentValue = content.value
             const color = document.querySelector('input[name="color"]:checked').value
             //валидация
-            if (titleValue.length === 0) {
-                this.showMessage('Заголовок заметки пустой', 'error')
+            if(!titleValue.trim() || !contentValue.trim()){
+                this.showMessage(messages.messageWarning)
                 return
             }
-
-            if (contentValue.length === 0) {
-                this.showMessage('Содержимое заметки пусто', 'error')
-                return
-            }
-
             if (titleValue.length > 50) {
-                this.showMessage('Название заметки более 50 символов', 'error')
+                this.showMessage(messages.messageWarningLength)
                 return
             }
-
             if (contentValue.length > 300) {
-                this.showMessage('Длина заметки более 300 символов', 'error')
+                this.showMessage(messages.messageWarningContentLength)
                 return//т.к в addEventListener используется стрелочная функция, то можно использовать this
             }
             controller.addNote(titleValue, contentValue, color)
@@ -190,10 +183,13 @@ const view = {
         const currentCount = document.querySelector('.count')
         currentCount.textContent = count
     },
-    showMessage(msg, type = 'success') {
+    showMessage(messageType) {
         const itemMessage = document.createElement('div')
-        itemMessage.className = type === 'error' ? 'message-error' : 'message-success'
-        itemMessage.textContent = msg
+        itemMessage.className = `message ${messageType.class ? messageType.class : ''}`
+        itemMessage.innerHTML = `
+        <img src="${messageType.image}">
+        <span>${messageType.text}</span>        
+        `
 
         document.querySelector('.messages-box').append(itemMessage)
 
@@ -207,14 +203,14 @@ const controller = {
 
         this.getVisibleNotes(showFavoritesOnly = model.isFilteringFavorites)
         view.renderNotesCount(model.notes.length)
-        view.showMessage('Заметка удалена')
+        view.showMessage(messages.deleteMessage)
     },
     addNote(title, content, color) {
         model.addNote(title, content, color)
 
         this.getVisibleNotes(showFavoritesOnly = model.isFilteringFavorites)
         view.renderNotesCount(model.notes.length)
-        view.showMessage('Заметка добавлена')
+        view.showMessage(messages.addMessage)
     },
     noteToggleFavorite(noteID) {
         model.noteToggleFavorite(noteID)
