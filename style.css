@@ -86,17 +86,14 @@ legend {
 }
 
 .message-success { background: var(--message-color-success); color: var(--color-white); }
-.message-error { background: var(--message-color-error); color: var(--color-white); }
-.message-warning {
-  background: var(--message-color-error);
-  color: var(--color-white);
-}
+.message-warning { background: var(--message-color-error);color: var(--color-white);}
 
 @keyframes appearance {
   from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 /*блок для сообщейний */
+/* 🔥🔥
 .messages-box {
   display: flex;
   flex-direction: column;
@@ -106,6 +103,17 @@ legend {
   right: 20px;
   z-index: 1000;
 }
+*/
+.messages-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-self: flex-end;
+  position: sticky;
+  bottom: 72px;
+  z-index: 1;
+}
+
 
 /*конопка удаления*/
 .delete-button {
@@ -170,6 +178,34 @@ legend {
   display: flex;
   flex-direction: column; /* содержимое идёт сверху вниз */
 }
+
+header {
+  height: 60px;
+  padding: 18px 64px;
+  box-shadow: 0 1px 3px rgba(11,12,13,.16),
+              0 0 1px rgba(11,12,13,.24);
+  background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--color-black);
+}
+main {
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 18px 64px;
+  background-color: #fafafc;
+  font-size: 14px;
+  line-height: 2;
+  color: var(--color-black);
+}
+
 
 /* Заголовок карточки */
 .note-header {
@@ -242,4 +278,11 @@ legend {
   .notes-list li {
     max-width: 100%;
   }
+}
+
+@media screen and (max-width: 576px) {
+  header { padding: 12px; }
+  main { padding: 12px; gap: 2px; }
+  .input-notes { padding: 12px; }
+  .note-form { gap: 8px; width: 100%; }
 }
